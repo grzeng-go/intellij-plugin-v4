@@ -1,77 +1,68 @@
-buildscript {
-    repositories {
-        mavenCentral()
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij.platform' version '2.17.0'
+}
+
+group = 'com.grzeng'
+version = pluginVersion
+
+// 移除或修改原本的 compileJava 块，改用标准的 java 扩展块来配置工具链
+java {
+    toolchain {
+        // 显式声明使用 Java 21 工具链
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
-
-plugins {
-    id "org.jetbrains.intellij" version "1.17.4"
-}
-
-wrapper {
-    gradleVersion = '7.5'
-}
-
-group 'antlr'
-version pluginVersion
-
-apply plugin: 'java'
-apply plugin: 'org.jetbrains.intellij'
-apply plugin: 'antlr'
 
 compileJava {
-    sourceCompatibility = '17'
-    targetCompatibility = '17'
-}
-
-intellij {
-    version = ideaVersion
-
-    pluginName = 'antlr-intellij-plugin-v4'
-    downloadSources = true
-    updateSinceUntilBuild = true
-
-    patchPluginXml {
-        sinceBuild = sinceBuildVersion
-        untilBuild = untilBuildVersion
-    }
+    // 编码格式可以保留
+    options.encoding = 'UTF-8'
 }
 
 repositories {
     mavenCentral()
     mavenLocal()
-    maven { // Gets snapshots of antlr if needed
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
+
+    // 关键配置，否则找不到正确下载idea插件依赖的地址
+    intellijPlatform {
+        defaultRepositories()
     }
 }
 
 dependencies {
-    antlr("org.antlr:antlr4:$antlr4Version") { // use ANTLR version 4
-        exclude group:'com.ibm.icu', module:'icu4j'
-    }
-    implementation "org.antlr:antlr4-intellij-adaptor:0.1"
+    implementation 'org.freemarker:freemarker:2.3.33'
     implementation group: 'org.jfree', name: 'org.jfree.svg', version: '5.0.7'
+
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.20.0'
+
+    // 2. 修改版本号配置 (适配 2025+ 平台)
+    intellijPlatform {
+        // 指定目标 IDEA 版本为 2025.1 或更高
+        intellijIdea(ideaVersion)
+
+        bundledPlugin("com.intellij.java")
+    }
 }
 
-generateGrammarSource {
-    include("**/ANTLRv4*.g4")
+intellijPlatform {
+    pluginConfiguration {
+        id = 'grzeng-plugin-id'
+        name = 'grzeng-plugin'
+        version = project.version
 
-    arguments += [
-            "-package", "org.antlr.intellij.plugin.parser",
-            "-lib", "src/main/antlr/org/antlr/intellij/plugin/parser",
-            "-Xexact-output-dir"
-    ]
+        ideaVersion {
+            sinceBuild = sinceBuildVersion
+            untilBuild = untilBuildVersion
+        }
+    }
+    instrumentCode = true
 }
 
 test {
-    testLogging {
-        events "failed"
-        exceptionFormat "full"
-    }
+    enabled = false
 }
 
-runIde {
-    jvmArgs '-Xmx8G'
+tasks.runIde {
+    jvmArgs = ['-Xmx8G']
 }

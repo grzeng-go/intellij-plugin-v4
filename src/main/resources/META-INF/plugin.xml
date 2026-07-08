@@ -1,10 +1,10 @@
 <idea-plugin>
-  <id>org.antlr.intellij.plugin</id>
-  <name>ANTLR v4</name>
-  <version>will be replaced by gradle</version>
-  <vendor email="parrt@antlr.org" url="https://github.com/antlr/intellij-plugin-v4">ANTLR Project</vendor>
+    <id>com.grzeng.intellij.plugin</id>
+    <name>grzeng plugin</name>
+    <version>will be replaced by gradle</version>
+    <vendor email="parrt@antlr.org" url="https://github.com/antlr/intellij-plugin-v4">grzeng plugin Project</vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
   <p>
       This plugin is for ANTLR v4 grammars and includes ANTLR 4.13.2. It works with
       2022.3 and above.  It should work in other JetBrains IDEs.
@@ -71,106 +71,39 @@ For really big files and slow grammars, there is an appreciable delay when displ
 <a href="https://github.com/antlr/intellij-plugin-v4">Github source</a>
       ]]></description>
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
 	<ul>
 	    <li>Add completion contributor for import statements. by @indegro in #676</li>
     	<li>Key arrow down in overview generated NullPointerException #725</li>
     </ul>
 	 See the complete list of <a href="https://github.com/antlr/intellij-plugin-v4/issues?q=milestone%3A1.25+is%3Aclosed">fixed issues</a>.
       ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html for description -->
-  <!-- can be overriden by the Gradle build if needed -->
-  <idea-version since-build="223"/>
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html for description -->
+    <!-- can be overriden by the Gradle build if needed -->
+    <idea-version since-build="223"/>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products -->
-  <depends>com.intellij.modules.lang</depends>
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products -->
+    <depends>com.intellij.modules.lang</depends>
 
-  <application-components>
-  </application-components>
+    <application-components>
+    </application-components>
 
-  <project-components>
-    <component>
-        <implementation-class>org.antlr.intellij.plugin.ANTLRv4PluginController</implementation-class>
-    </component>
-  </project-components>
-
-  <actions>
-      <action id="antlr.Generate" class="org.antlr.intellij.plugin.actions.GenerateParserAction"
-     		text="Generate ANTLR Recognizer">
-     		<keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
-     		<add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
-     		<add-to-group group-id="EditorPopupMenu" anchor="last"/>
-     		<add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-     	</action>
-        <action id="antlr.Configure" class="org.antlr.intellij.plugin.actions.ConfigureANTLRAction"
-            text="Configure ANTLR...">
-            <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
+    <actions>
+        <action id="grzeng.json.Generate" class="com.grzeng.intellij.plugin.actions.jsonplugin.JsonToJavaPlugin"
+                text="Generate POJOs from JSON">
+            <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
+            <add-to-group group-id="ToolsMenu" anchor="before"
+                          relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </action>
-        <action id="antlr.TestRule" class="org.antlr.intellij.plugin.actions.TestRuleAction"
-            text="Test ANTLR Rule">
-            <add-to-group group-id="StructureViewPopupMenu" anchor="first"/>
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
-        <action id="antlr.DefineLexerRulesForLiterals"
-            class="org.antlr.intellij.plugin.actions.GenerateLexerRulesForLiteralsAction"
-            text="Generate lexer rules for literals"
-            description="Inject lexer rules for undefined literals but leave literal in place">
-            <add-to-group group-id="GenerateGroup" anchor="first"/>
-        </action>
-        <action id="antlr.InlineRule" class="org.antlr.intellij.plugin.actions.InlineRuleAction"
-            text="Inline and remove rule">
-			<keyboard-shortcut keymap="$default" first-keystroke="control alt N"/>
-            <add-to-group group-id="RefactoringMenu" anchor="before" relative-to-action="Move"/>
-        </action>
-		<action id="antlr.ExtractRule"
-			class="org.antlr.intellij.plugin.actions.ExtractRuleAction"
-			text="Extract rule...">
-			<keyboard-shortcut keymap="$default" first-keystroke="control alt M"/>
-		    <add-to-group group-id="RefactoringMenu" anchor="after" relative-to-action="antlr.InlineRule"/>
-		</action>
-		<action id="antlr.UniquifyRuleRefs"
-			class="org.antlr.intellij.plugin.actions.UniquifyRuleRefs"
-			text="Make refs to rule unique...">
-			<add-to-group group-id="RefactoringMenu" anchor="after" relative-to-action="antlr.ExtractRule"/>
-		</action>
-  </actions>
+    </actions>
 
-  <extensions defaultExtensionNs="com.intellij">
-      <fileTypeFactory implementation="org.antlr.intellij.plugin.ANTLRv4FileTypeFactory"/>
-      <lang.syntaxHighlighterFactory language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.ANTLRv4SyntaxHighlighterFactory"/>
-      <lang.commenter language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.ANTLRv4Commenter" />
-      <indexPatternBuilder implementation="org.antlr.intellij.plugin.psi.ANTLRv4IndexPatternBuilder"/>
-      <lang.braceMatcher language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.editor.ANTLRv4BraceMatcher"/>
-      <colorSettingsPage implementation="org.antlr.intellij.plugin.configdialogs.ANTLRv4ColorsPage"/>
-	  <additionalTextAttributes scheme="Default" file="colorSchemes/ANTLRv4Default.xml"/>
-	  <additionalTextAttributes scheme="Darcula" file="colorSchemes/ANTLRv4Darcula.xml"/>
-	  <lang.parserDefinition language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.ANTLRv4ParserDefinition"/>
-      <lang.ast.factory language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.ANTLRv4ASTFactory"/>
-      <lang.psiStructureViewFactory language="ANTLRv4"
-                implementationClass="org.antlr.intellij.plugin.structview.ANTLRv4StructureViewFactory"/>
-      <lang.foldingBuilder language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.folding.ANTLRv4FoldingBuilder" />
-      <iconProvider implementation="org.antlr.intellij.plugin.ANTLRv4IconProvider"/>
+    <extensions defaultExtensionNs="com.intellij">
 
-      <externalAnnotator language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.ANTLRv4ExternalAnnotator"/>
-      <lang.findUsagesProvider language="ANTLRv4"
-                implementationClass="org.antlr.intellij.plugin.ANTLRv4FindUsagesProvider"/>
-
-      <defaultLiveTemplates file="/liveTemplates/lexer/user.xml"/>
-	  <liveTemplateContext contextId="OTHER" implementation="org.antlr.intellij.plugin.templates.ANTLRGenericContext"/>
-	  <liveTemplateContext contextId="OTHER" implementation="org.antlr.intellij.plugin.templates.OutsideRuleContext"/>
-      <projectConfigurable groupId="language"
-                           id="org.antlr.intellij.plugin.configdialogs.ANTLRv4ProjectSettings"
-                           displayName="ANTLR v4 default project settings"
-                           instance="org.antlr.intellij.plugin.configdialogs.ANTLRv4ProjectSettings"/>
-      <projectService serviceImplementation="org.antlr.intellij.plugin.configdialogs.ANTLRv4GrammarPropertiesComponent"/>
-      <lang.refactoringSupport language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.refactor.ANTLRv4RefactoringSupport"/>
-      <completion.contributor language="ANTLRv4"
-                              implementationClass="org.antlr.intellij.plugin.completion.ANTLRv4CompletionContributor"/>
-  </extensions>
+    </extensions>
 </idea-plugin>
